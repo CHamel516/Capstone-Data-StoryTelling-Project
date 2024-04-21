@@ -50,7 +50,7 @@ print(classification_report(y_test, y_pred))
 import joblib
 joblib.dump(model, 'ncaa_model.pkl')
 
-# Example of how you might predict new data for an upcoming tournament
+# Predict new data for an upcoming tournament
 # new_data = pd.read_csv(r"path_to_new_tournament_data.csv")
 # new_data_processed = preprocess_new_data(new_data)  # Define preprocess_new_data to fit your dataset
 # predictions = model.predict(new_data_processed)
