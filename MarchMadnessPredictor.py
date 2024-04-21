@@ -4,31 +4,35 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score, classification_report
 
 # Define paths to the datasets
-base_path = r"D:\Code Projects\Capstone Data StoryTelling Project\DataSet"
-team_results_path = f"{base_path}\\Team Results.csv"
-power_ratings_path = f"{base_path}\\538 Ratings.csv"
-seed_results_path = f"{base_path}\\Seed Results.csv"
+base_path = r"/Users/jeremyhamel/Documents/GitHub/Capstone-Data-StoryTelling-Project/DataSet/"
+team_results_path = f"{base_path}TeamResults.csv"
+power_ratings_path = f"{base_path}538 Ratings.csv"
+seed_results_path = f"{base_path}Seed Results.csv"
 
 # Load datasets
 team_results = pd.read_csv(team_results_path)
 power_ratings = pd.read_csv(power_ratings_path)
 seed_results = pd.read_csv(seed_results_path)
 
-# Check columns to ensure the key for merging exists
-print(team_results.columns)
-print(power_ratings.columns)
-print(seed_results.columns)
-
 # Merging datasets
 combined_data = team_results.merge(power_ratings, on='TEAM').merge(seed_results, on='SEED')
+
+# Check the column names in combined_data
+print(combined_data.columns)
 
 # Data cleaning
 combined_data.dropna(inplace=True)
 combined_data['SEED'] = pd.Categorical(combined_data['SEED']).codes
 
 # Feature selection
-X = combined_data[['POWER RATING', 'SEED', 'PAKE', 'PAKE RANK', 'PASE', 'PASE RANK', 'GAMES', 'W', 'L', 'WIN%', 'R64', 'R32', 'S16', 'E8', 'F4', 'F2', 'CHAMP', 'TOP2', 'F4%', 'CHAMP%']]  # Replace 'OTHER_RELEVANT_METRICS' with actual metrics from your data
-y = combined_data['WINNER']  # WINNER column should indicate if the team won the game
+# Adjust feature selection based on the actual column names in combined_data with suffixes (_x and _y)
+X = combined_data[['POWER RATING', 'SEED', 'PAKE_x', 'PAKE RANK_x', 'PASE_x', 'PASE RANK_x', 'GAMES_x', 'W_x', 'L_x', 'WIN%_x', 'R64_x', 'R32_x', 'S16_x', 'E8_x', 'F4_x', 'F2_x', 'CHAMP_x', 'TOP2_x', 'F4%', 'CHAMP%_x']]
+
+# Identify the correct target variable column name
+# Example: If the target variable indicates whether a team won or lost, replace 'WINNER_COLUMN_NAME' with the actual column name
+target_variable_name = 'CHAMP_x'  # Replace 'WINNER' with the actual column name representing the target variable
+
+y = combined_data[target_variable_name]
 
 # Splitting the data
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
@@ -51,5 +55,3 @@ joblib.dump(model, 'ncaa_model.pkl')
 # new_data_processed = preprocess_new_data(new_data)  # Define preprocess_new_data to fit your dataset
 # predictions = model.predict(new_data_processed)
 # print(predictions)
-
-# Note: You need to define preprocess_new_data or ensure the new_data has the same format and preprocessing as your training data
